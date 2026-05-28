@@ -5,12 +5,38 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import EmptyWorkspace from './EmptyWorkspace';
-
-
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 
 function WorkspaceBody() {
+    // const cookieStore=await cookies();
+    // const token = cookieStore.get('gh_token')?.value
+      const router = useRouter();
+      const [token, setToken] = useState('');
     const { userDetail } = useContext(UserDetailContext);
+     useEffect(() => {
+        GetGithubUserToken();
+
+    }, [])  
+
+
+
+
+        const GetGithubUserToken = async () => {
+        const result = await axios.get('/api/github/token');
+        console.log(result.data.token)
+        setToken(result.data.token);
+    }
+
+
+
+
+     const OnAddRepo = async () => {
+        router.push('/api/github');
+    }
+
+
   return (
     <div>
         <div className='flex justify-between items-center'>
@@ -26,7 +52,8 @@ function WorkspaceBody() {
 
                 <div>
 
-                    <Button>Install</Button>
+                     {!token ? <Button onClick={OnAddRepo}>Setup</Button>
+                        : <Button>+Add Repo</Button>}
                 </div>
                
             </Card>
