@@ -8,22 +8,43 @@ import EmptyWorkspace from './EmptyWorkspace';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import RepoDialog, { Repo } from './RepoDialog';
+import UserRepoList from './UserRepoList';
 
-
-
+export type UserRepo = {
+    id: number;
+    repoId: number;
+    name: string;
+    fullName: string;
+    private: boolean;
+    htmlUrl: string;
+    description: string;
+    userId: number;
+    owner: string;
+    updatedAt: string;
+    language: string;
+    defaultBranch: string;
+    targetDomain?: string;
+    gloablInstruction?: string;
+}
 
 function WorkspaceBody() {
     // const cookieStore=await cookies();
     // const token = cookieStore.get('gh_token')?.value
       const router = useRouter();
       const [token, setToken] = useState('');
-    const { userDetail } = useContext(UserDetailContext);
+      const [userRepoList, setUserRepoList] = useState<UserRepo[]>([]);
+    const [loading, setLoading] = useState(true);
+    
+      const { userDetail } = useContext(UserDetailContext);
      useEffect(() => {
         GetGithubUserToken();
+       
 
     }, [])  
 
-
+useEffect(() => {
+        userDetail?.id && GetUserAddedRepoList();
+    }, [userDetail?.id])
 
 
         const GetGithubUserToken = async () => {
@@ -37,6 +58,14 @@ function WorkspaceBody() {
 
      const OnAddRepo = async () => {
         router.push('/api/github');
+    }
+
+        const GetUserAddedRepoList = async () => {
+        setLoading(true);
+        const result = await axios.get('/api/user-repo?userId=' + userDetail?.id);
+        console.log(result.data);
+        setUserRepoList(result.data);
+        setLoading(false);
     }
 
 
@@ -56,16 +85,27 @@ function WorkspaceBody() {
                 <div>
 
                      {!token ? <Button onClick={OnAddRepo}>Setup</Button>
-                        :  <RepoDialog setRefreshPage={(refresh: boolean) => console.log(refresh)} /> }
+                        :  <RepoDialog setRefreshPage={(refresh: boolean) => GetUserAddedRepoList()} /> }
                 </div>
                
             </Card>
 
-             <Card className='mt-10'>
+             {loading ? (
+                <div className='mt-10'>
+                    <div className='my-3 bg-slate-200 animate-pulse w-32 h-6 rounded'></div>
+                    {[1, 2, 3].map((item) => (
+                        <div key={item} className='w-full h-16 bg-slate-200 animate-pulse rounded-xl mb-5'></div>
+                    ))}
+                </div>
+            ) : userRepoList?.length === 0 ? (
+                <Card className='mt-10'>
                     <CardContent>
                         <EmptyWorkspace />
                     </CardContent>
-            </Card>
+                </Card>
+            ) : (
+                <UserRepoList repoList={userRepoList} setReload={() => GetUserAddedRepoList()} />
+            )}
     </div>
   )
 }
