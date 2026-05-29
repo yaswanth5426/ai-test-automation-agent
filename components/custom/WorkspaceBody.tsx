@@ -7,6 +7,9 @@ import { Button } from '../ui/button';
 import EmptyWorkspace from './EmptyWorkspace';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import RepoDialog, { Repo } from './RepoDialog';
+
+
 
 
 function WorkspaceBody() {
@@ -53,7 +56,7 @@ function WorkspaceBody() {
                 <div>
 
                      {!token ? <Button onClick={OnAddRepo}>Setup</Button>
-                        : <Button>+Add Repo</Button>}
+                        :  <RepoDialog setRefreshPage={(refresh: boolean) => console.log(refresh)} /> }
                 </div>
                
             </Card>
