@@ -1,26 +1,22 @@
 import React, { useContext, useState } from 'react'
 import { UserRepo } from './WorkspaceBody'
-import Image from 'next/image'
-import { Button } from '../ui/button'
-import { CheckCircle2, Globe2Icon, Link2Icon, ListChecks, Loader2, Loader2Icon, Settings2, Sparkles, TrendingUp, XCircle } from 'lucide-react'
-import { UserDetailContext } from '@/context/UserDetailContext'
-import axios from 'axios'
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import Image from 'next/image'
+import { CheckCircle2, Globe2Icon, Link2Icon, ListChecks, Loader2, Loader2Icon, Settings2, Sparkles, TrendingUp, XCircle } from 'lucide-react'
+import { Button } from '../ui/button'
+import axios from 'axios'
+import { UserDetailContext } from '@/context/UserDetailContext'
 import TestCaseList from './TestCaseList'
+import RepoSettings from './RepoSettings'
+import test from 'node:test'
 type props = {
     repoList: UserRepo[],
     setReload: () => void;
-}
-type StatusData = {
-    totalTests: number;
-    passedTests: number;
-    failedTests: number;
-    passRate: number;
 }
 
 export type TestCase = {
@@ -38,9 +34,15 @@ export type TestCase = {
     browserbaseScript: string;
 }
 
+type StatusData = {
+    totalTests: number;
+    passedTests: number;
+    failedTests: number;
+    passRate: number;
+}
 
+function UserRepoList({ repoList, setReload }: props) {
 
-function UserRepoList({repoList}:props) {
     const [statusData, setStatusData] = useState<StatusData>({
         totalTests: 0,
         passedTests: 0,
@@ -48,12 +50,12 @@ function UserRepoList({repoList}:props) {
         passRate: 0
     });
 
+
     const { userDetail, setUserDetail } = useContext(UserDetailContext);
     const [loading, setLoading] = useState(false);
     const [testCaseLoading, setTestCaseLoading] = useState(false);
     const [testCases, setTestCases] = useState<TestCase[]>([]);
-  
-     const handleGenerateTestCases = async (repo: UserRepo) => {
+    const handleGenerateTestCases = async (repo: UserRepo) => {
         setLoading(true);
         try {
             // Implement the logic to call the API route to generate test cases for the selected repository
@@ -103,8 +105,7 @@ function UserRepoList({repoList}:props) {
         setTestCaseLoading(false);
 
     }
-  
-  
+
     return (
         <div className='mt-10'>
             <h2 className='my-3 font-medium'>REPOSITORIES</h2>
@@ -137,7 +138,7 @@ function UserRepoList({repoList}:props) {
                                         <h2>Target Domain:</h2>
                                         <h2 className='bg-white p-1 px-2 border rounded-md text-primary font-medium'>{repo?.targetDomain}</h2>
                                     </div>
-                                    
+                                    <RepoSettings repo={repo} setReload={setReload} />
                                 </div>
                                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
 
@@ -207,6 +208,8 @@ function UserRepoList({repoList}:props) {
 }
 
 export default UserRepoList
+
+
 
 function StatusCard({
     title,
