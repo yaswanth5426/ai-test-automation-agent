@@ -114,7 +114,7 @@ function UserRepoList({ repoList, setReload }: props) {
             >
                 {repoList.map((repo, index) => (
 
-                    <AccordionItem value={(repo.repoId).toString()} className='border px-5 rounded-xl mb-5'>
+                    <AccordionItem  key={repo.repoId} value={(repo.repoId).toString()} className='border px-5 rounded-xl mb-5'>
                         <AccordionTrigger>
                             <div className='flex items-center gap-5'>
                                 <Image src={'/github.png'} alt='github' width={30} height={30} />
