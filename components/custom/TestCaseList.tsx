@@ -5,7 +5,7 @@ import { Checkbox } from '../ui/checkbox'
 import { Badge } from '../ui/badge'
 import { Play, RefreshCw, Settings, SettingsIcon } from 'lucide-react'
 import { Button } from '../ui/button'
-import TestExecutionModal from './TestExecutionModal'
+import TestExecutionModal from './TestCaseExecutionModal'
 import TestCaseSettingDialog from './TestCaseSettingDialog'
 
 
