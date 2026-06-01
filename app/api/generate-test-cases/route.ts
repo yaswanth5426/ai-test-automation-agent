@@ -88,10 +88,15 @@ async function getRepoTree({
             },
         }
     );
+if (!res.ok) {
+    console.log("GitHub Status:", res.status);
+    console.log("GitHub Status Text:", res.statusText);
 
-    if (!res.ok) {
-        throw new Error("Failed to fetch GitHub repo tree");
-    }
+    const errorText = await res.text();
+    console.log("GitHub Response:", errorText);
+
+    throw new Error("Failed to fetch GitHub repo tree");
+}
 
     const data = await res.json();
 
